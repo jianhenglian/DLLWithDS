@@ -1,0 +1,193 @@
+<!--
+ * 这里我们试着去完善一下，首先是引入vue，然后传入复选框
+ * @Descripttion: 
+ * @version: 
+ * @Author: Lian Jianheng
+ * @Date: 2021-11-28 16:20:49
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-01 15:14:53
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style>
+        *
+        {
+            box-sizing: border-box;
+        }
+        .rowMenu
+        {
+            list-style-type:none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .rowMenu li
+        {
+            float: left;
+        }
+        .rowMenu li a
+        {
+            display: inline-block;
+            color: black;
+            text-align: center;
+            padding: 16px;
+            text-decoration: none;
+        }
+        .rowMenu li a:hover
+        {
+            background-color: blueviolet;
+        }
+        .rowMenu li a:active
+        {
+            background-color: darkgreen;
+        }
+        .myButton
+        {
+            padding: 16px 32px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.4/FileSaver.js">
+        <input type="button" id="export" value="保存"/>
+    </script> -->
+    <script>
+        var result=document.getElementById("result");  
+        var file=document.getElementById("file");
+        function uploadFile()
+        {
+            let reads = new FileReader();
+            var file = document.getElementById('uploadFile1').files[0];
+            reads.readAsText(file, 'utf-8');
+            reads.onload=function(f)
+            {
+                var result = document.getElementById("textArea");
+                result.innerText = this.result;
+            }
+            // console.log(reads);
+        }
+        function storeClick()
+        {
+            alert("保存成功");
+        }
+    </script>
+    <form action="">
+        <input type="file" id="uploadFile1" name="上传案例文件"  accept=".txt">
+        <input type="button" value="读取文本文件" onclick="uploadFile()" />  
+    </form>
+    <textarea id="textArea" rows="20" cols="80">
+    </textarea>
+    <div id="app">
+        <ul class="rowMenu">
+            <li>
+                <input class="myButton" type="button" @click="nameMethod" value="姓名">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="excuseMethod" value="案由">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="sexMethod" value="性别">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="homeMethod" value="法院">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="wasMethod" value="被告">
+            </li>
+        </ul>
+        <template v-if="seenSex">
+            <input type="checkbox">
+            <label >男</label>
+            <input type="checkbox">
+            <label >女</label>
+        </template>
+        <template v-if="seenExcuse">
+            <input type="checkbox">
+            <label>案由1</label>
+            <input type="checkbox">
+            <label>案由2</label>
+        </template>
+        <template v-if="seenName">
+            <input type="checkbox">
+            <label>练大帅</label>
+            <input type="checkbox">
+            <label>段大炮</label>
+        </template>
+        <template v-if="seenHome">
+            <input type="checkbox">
+            <label>昆山法院</label>
+            <input type="checkbox">
+            <label>曲靖法院</label>
+        </template>
+        <template v-if="seenWas">
+            <input type="checkbox">
+            <label>陆哥</label>
+            <input type="checkbox">
+            <label>练龙</label>
+        </template>
+    </div>
+    <script>
+        const myApp=Vue.createApp({
+            data(){
+                return{
+                    seenSex:false,
+                    seenWas:false,
+                    seenName:false,
+                    seenHome:false,
+                    seenExcuse:false
+                }
+            },
+            methods:{
+                sexMethod(){
+                    this.seenSex=true
+                    this.seenWas=false
+                    this.seenName=false
+                    this.seenHome=false
+                    this.seenExcuse=false
+                },
+                nameMethod(){
+                    this.seenSex=false
+                    this.seenWas=false
+                    this.seenName=true
+                    this.seenHome=false
+                    this.seenExcuse=false
+                },
+                homeMethod(){
+                    this.seenHome=true
+                    this.seenSex=false
+                    this.seenWas=false
+                    this.seenName=false
+                    this.seenExcuse=false
+                },
+                excuseMethod(){
+                    this.seenExcuse=true
+                    this.seenSex=false
+                    this.seenWas=false
+                    this.seenName=false
+                    this.seenHome=false
+                },
+                wasMethod(){
+                    this.seenWas=true
+                    this.seenSex=false
+                    this.seenName=false
+                    this.seenHome=false
+                    this.seenExcuse=false
+                }
+            }
+        })
+        myApp.mount("#app")
+    </script>
+    <div>
+        <form action="" method="get">
+            <input type="button" id="save" value="保存案件和备注" onclick="storeClick()">
+        </form>
+    </div>
+</body>
+</html>
