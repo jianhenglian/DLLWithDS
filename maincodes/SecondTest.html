@@ -5,7 +5,7 @@
  * @Author: Lian Jianheng
  * @Date: 2021-11-28 16:20:49
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-12-01 15:14:53
+ * @LastEditTime: 2021-12-10 15:09:00
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +52,20 @@
             padding: 16px 32px;
             text-align: center;
         }
+        .dirCar:link
+        {
+            display:block;
+	        font-weight:bold;
+	        color:#FFFFFF;
+	        width:160px;
+	        text-align:center;
+	        padding:4px;
+	        text-decoration:none;
+        }
+        .dirCar:hover
+        {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -71,7 +85,6 @@
                 var result = document.getElementById("textArea");
                 result.innerText = this.result;
             }
-            // console.log(reads);
         }
         function storeClick()
         {
@@ -84,110 +97,153 @@
     </form>
     <textarea id="textArea" rows="20" cols="80">
     </textarea>
-    <div id="app">
+    <div id="app" class="main">
         <ul class="rowMenu">
             <li>
-                <input class="myButton" type="button" @click="nameMethod" value="姓名">
-            </li>
-            <li>
-                <input class="myButton" type="button" @click="excuseMethod" value="案由">
+                <input class="myButton" type="button" @click="nameMethod" value="当事人">
             </li>
             <li>
                 <input class="myButton" type="button" @click="sexMethod" value="性别">
             </li>
             <li>
-                <input class="myButton" type="button" @click="homeMethod" value="法院">
+                <input class="myButton" type="button" @click="MinMethod" value="民族">
             </li>
             <li>
-                <input class="myButton" type="button" @click="wasMethod" value="被告">
+                <input class="myButton" type="button" @click="homeMethod" value="出生地">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="excuseMethod" value="案由">
+            </li>
+            <li>
+                <input class="myButton" type="button" @click="relativeMethod" value="相关法院">
             </li>
         </ul>
+        <template v-if="seenName">
+            <input type="checkbox">
+            <label>牛喜</label>
+            <input type="checkbox">
+            <label>刘某甲</label>
+            <input type="checkbox">
+            <label>丁成飞</label>
+            <input type="checkbox">
+            <label>李加玺</label>
+            <input type="checkbox">
+            <label>高　蕾</label>
+            <input type="checkbox">
+            <label>范　治</label>
+        </template>
         <template v-if="seenSex">
             <input type="checkbox">
             <label >男</label>
             <input type="checkbox">
             <label >女</label>
         </template>
-        <template v-if="seenExcuse">
+        <template v-if="seenMin">
             <input type="checkbox">
-            <label>案由1</label>
+            <label>汉族</label>
             <input type="checkbox">
-            <label>案由2</label>
-        </template>
-        <template v-if="seenName">
-            <input type="checkbox">
-            <label>练大帅</label>
-            <input type="checkbox">
-            <label>段大炮</label>
+            <label>回族</label>
         </template>
         <template v-if="seenHome">
             <input type="checkbox">
-            <label>昆山法院</label>
+            <label>陕西省西安市</label>
             <input type="checkbox">
-            <label>曲靖法院</label>
+            <label>西安市××区××村××号付×号</label>
+            <input type="checkbox">
+            <label>XX村北侧北三环绿化带</label>
+            <input type="checkbox">
+            <label>陕西省西安市XX区XX村</label>
+            <input type="checkbox">
+            <label>西安市××区××村××号付×号</label>
         </template>
-        <template v-if="seenWas">
+        <template v-if="seenExcuse">
             <input type="checkbox">
-            <label>陆哥</label>
+            <label>抢劫罪</label>
             <input type="checkbox">
-            <label>练龙</label>
+            <label>抢劫罪</label>
+            <input type="checkbox">
+            <label>抢劫罪</label>
+            <input type="checkbox">
+            <label>抢劫罪</label>
+        </template>
+        <template v-if="seenRelative">
+            <input type="checkbox">
+            <label>陕西省高级人民法院</label>
+            <input type="checkbox">
+            <label>陕西省西安市中级人民法院审理西安市人民检察院</label>
         </template>
     </div>
+    <div>
+        <form action="" method="get">
+            <input type="button" id="save" value="保存案件和备注" onclick="storeClick()" height="100">
+        </form>
+    </div>
+    <a href="https://wenshu.court.gov.cn/" class="dirCar">裁判文书网直通车<img src="E:\homeworks\homeworks_second_up\数据科学基础\bigProject\someFile\dirMove.png" width="600">
+    </a>
     <script>
         const myApp=Vue.createApp({
             data(){
                 return{
                     seenSex:false,
-                    seenWas:false,
+                    seenMin:false,
                     seenName:false,
                     seenHome:false,
-                    seenExcuse:false
+                    seenExcuse:false,
+                    seenRelative:false
                 }
             },
             methods:{
                 sexMethod(){
                     this.seenSex=true
-                    this.seenWas=false
+                    this.seenMin=false
                     this.seenName=false
                     this.seenHome=false
                     this.seenExcuse=false
+                    this.seenRelative=false
                 },
                 nameMethod(){
                     this.seenSex=false
-                    this.seenWas=false
+                    this.seenMin=false
                     this.seenName=true
                     this.seenHome=false
                     this.seenExcuse=false
+                    this.seenRelative=false
                 },
                 homeMethod(){
                     this.seenHome=true
                     this.seenSex=false
-                    this.seenWas=false
+                    this.seenMin=false
                     this.seenName=false
                     this.seenExcuse=false
+                    this.seenRelative=false
                 },
                 excuseMethod(){
                     this.seenExcuse=true
                     this.seenSex=false
-                    this.seenWas=false
+                    this.seenMin=false
                     this.seenName=false
                     this.seenHome=false
+                    this.seenRelative=false
                 },
-                wasMethod(){
-                    this.seenWas=true
+                MinMethod(){
+                    this.seenMin=true
                     this.seenSex=false
                     this.seenName=false
                     this.seenHome=false
                     this.seenExcuse=false
+                    this.seenRelative=false
+                },
+                relativeMethod(){
+                    this.seenMin=false
+                    this.seenSex=false
+                    this.seenName=false
+                    this.seenHome=false
+                    this.seenExcuse=false
+                    this.seenRelative=true
                 }
             }
         })
         myApp.mount("#app")
     </script>
-    <div>
-        <form action="" method="get">
-            <input type="button" id="save" value="保存案件和备注" onclick="storeClick()">
-        </form>
-    </div>
 </body>
 </html>
