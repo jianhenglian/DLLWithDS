@@ -14,3 +14,7 @@ This repository works for our big homework
 # 12.10
 
 练健恒上传了一个稍好一点的前端页面，并重构了文件结构
+
+# 1.13
+
+今天把70分要求的上传了
