@@ -9,6 +9,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = 'lyt ljh djf'
+    # WTF_CSRF_ENABLED = False
 
     @staticmethod
     def init__app(app):

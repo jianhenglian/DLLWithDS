@@ -1,25 +1,65 @@
 from flask import render_template, redirect, session, url_for, flash, request, send_from_directory
 from . import main
 from .forms import NameForm, FindSimiliarText, DivideForm, DivideFormResult
-from .learnText2.SimilarUtil import findMostSimilarText
+from .learnText2.SimilarUtil import findMostSimilarText, useJsonFind
+from .learnText2.Util import divideText, findDate
 from werkzeug.utils import secure_filename
 import os
 import json
 
 ALLOWED_EXTENSIONS = {'txt'}
 UPLOAD_FOLDER = 'D:\\self_learning\\flask\\dataH\\app\\main\\learnText2\\alldocuments'
-DOWNLOAD_FOLDER = 'D:\\self_learning\\flask\\dataH\\jsonFolader'
+DOWNLOAD_FOLDER = 'D:\\self_learning\\flask\\dataH\\app\\main\\learnText2\\jsonFolader'
 nameNum = 1
 
+
+# @csrf.exempt
 @main.route('/', methods=['GET', 'POST'])
 def index():
     newForm = FindSimiliarText()
     form = NameForm()
     if form.validate_on_submit():
-        newForm.text.data = form.text.data
-        newForm.similiarText.data = findMostSimilarText(newForm.text.data)
-        return render_template('index.html', form=newForm)
-    return render_template('index.html', form=form)
+            newForm.text.data = form.text.data
+            pattern = ""
+            if form.birthNeed.data:
+                pattern+="b"
+            if form.nameNeed.data:
+                pattern+="c"
+            if form.nationNeed.data:
+                pattern+="n"
+            if form.relaNeed.data:
+                pattern+="r"
+            if form.timeNeed.data:
+                pattern+="t"
+            findResult = useJsonFind(form.text.data, pattern)
+            newForm.similarText.data = findResult["文本"]
+            docujson = findResult["json"]
+            newForm.textGuess.data = findResult["guess"]
+            newForm.similarname.data = docujson["当事人"]
+            newForm.similarsex.data = docujson["性别"]
+            newForm.similarexcuse.data = docujson["案由"]
+            newForm.similarbirthplace.data = docujson["出生地"]
+            newForm.similarnation.data = docujson["民族"]
+            newForm.similarrelativeCourt.data = docujson["相关法院"]
+            try:
+                newForm.similartime.data = docujson["案件日期"]
+            except KeyError:
+                newForm.similartime.data = docujson["日期"]
+            return render_template('similarResult.html', form=newForm)
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = file.filename
+            text = readAFile(os.path.join(UPLOAD_FOLDER, filename))
+            form.text.data = text
+            return render_template('similar.html', form=form)
+    return render_template('similar.html', form=form)
 
 
 @main.route('/divide', methods=['GET', 'POST'])
@@ -28,13 +68,38 @@ def divide():
     newForm = DivideFormResult()
     if form.validate_on_submit():
         result = {}
-        result["姓名"] = newForm.name.data
-        result["民族"] = newForm.nation.data
-        result["性别"] = newForm.sex.data
-        result["出生地"] = newForm.birthplace.data
-        result["案由"] = newForm.excuse.data
-        result["相关法院"] = newForm.relativeCourt.data
-        result["发生时间"] = newForm.time.data
+        if newForm.nameReplace.data != "":
+            result["姓名"] = newForm.nameReplace.data
+        else:
+            result["姓名"] = newForm.name.data
+        if newForm.nationReplace.data != "":
+            result["民族"] = newForm.nationReplace.data
+        else:
+            result["民族"] = newForm.nation.data
+        if newForm.sexReplace.data != "":
+            result["性别"] = newForm.sexReplace.data
+        else:
+            result["性别"] = newForm.sex.data
+        if newForm.birthplaceReplace.data != "":
+            result["出生地"] = newForm.birthplaceReplace.data
+        else:
+            result["出生地"] = newForm.birthplace.data
+        if newForm.excuseReplace.data != "":
+            result["案由"] = newForm.excuseReplace.data
+        else:
+            result["案由"] = newForm.excuse.data
+        if newForm.relativeCourtReplace.data != "":
+            result["相关法院"] = newForm.relativeCourtReplace.data
+        else:
+            result["相关法院"] = newForm.relativeCourt.data
+        if newForm.timeReplace.data != "":
+            result["发生时间"] = newForm.timeReplace.data
+        else:
+            str = newForm.time.data
+            str = str.replace('年', '.')
+            str = str.replace('月', '.')
+            str = str.replace('日', '')
+            result["发生时间"] = str
         jsonDownload(nameNum, result)
         nameNumAdd()
         flash("保存成功")
@@ -48,10 +113,18 @@ def divide():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            # filename = secure_filename(file.filename)
+            filename = file.filename
             text = readAFile(os.path.join(UPLOAD_FOLDER, filename))
-            # form.text.data = text
             form = DivideFormResult()
+            divideResult = divideText(text)
+            form.sex.choices = divideResult['性别']
+            form.relativeCourt.choices = divideResult["相关法院"]
+            form.birthplace.choices = divideResult["出生地"]
+            form.name.choices = divideResult["姓名"]
+            form.nation.choices = divideResult["民族"]
+            form.time.choices = divideResult['案件日期']
+            form.excuse.choices = divideResult['案由']
             form.text.data = text
             return render_template('divideResult.html', form=form)
     return render_template('divide.html', form=form)
@@ -73,8 +146,13 @@ def allowed_file(filename):
 
 
 def readAFile(str):
-    with open(str, 'r', encoding='utf-8') as f:
-        return f.read()
+    try:
+        with open(str, 'r', encoding='utf-8') as file:
+            data = file.read()
+    except UnicodeDecodeError:
+        with open(str, 'r', encoding='gbk') as file:
+            data = file.read()
+        return data
 
 def jsonDownload(namenum, result):
     name = "jsonFile{}".format(namenum)
@@ -86,3 +164,4 @@ def jsonDownload(namenum, result):
 def nameNumAdd():
     global nameNum
     nameNum += 1
+
