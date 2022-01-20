@@ -10,39 +10,50 @@
 <div class="container">
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
-        <label>上传案例文件</label>
-    <br>
-    <input type=submit value=Upload>
-        <label>展示</label>
+        <p>已选择文件：{{ form.fileLabel.data }}</p>
+    <input type=submit value=上传 style="padding: 3px;background-color: #d4dbec;
+    border-radius: 10px;
+    height: 30px;
+    border: NONE;
+    width: 60px;">
     </form>
     <div>
         <div style="float:left">
         <form method="POST">
             {{ form.hidden_tag() }}
-            <p>被查找文本</p>
-            <textarea rows="20" cols="70">
+            <p style="font-size: 14px">被查找文本</p>
+            <textarea rows="20" cols="70" style="border: 5px solid lightgrey;
+                                                padding: 5px;">
                 {{ form.text.data }}
             </textarea>
-            <p>我们预估的您要查找的值为</p>
-            <textarea rows="20" cols="70">
+            <p style="font-size:15px">我们预估的您要查找的值为</p>
+            <textarea rows="20" cols="70" style="border: 5px solid lightgrey;
+                                                padding: 5px;">
                 {{ form.textGuess.data }}
             </textarea>
         </form>
     </div>
-        <div style="float:left">
+        <div style="float:left ">
             <form>
-                <p>相似度最高案例</p>
+                <p style="font-size:14px">相似度最高案例</p>
                 {{ form.hidden_tag() }}
-                <textarea rows="20" cols="70">
+                <textarea rows="20" cols="70" style="border: 5px solid lightgrey;
+                                                    padding: 5px;">
                     {{ form.similarText.data }}
                 </textarea>
-                <p>姓名 {{ form.similarname.data }}</p>
-                <p>性别 {{ form.similarsex.data }}</p>
-                <p>出生地 {{ form.similarbirthplace.data }}</p>
-                <p>民族 {{ form.similarnation.data }}</p>
-                <p>案发时间 {{ form.similartime.data }}</p>
-                <p>案由 {{ form.similarexcuse.data }}</p>
-                <p>相关法院 {{ form.similarrelativeCourt.data }}</p>
+                <p style="font-size:15px">相似度最高案例的相关信息</p>
+                <div style="
+                    border: 5px solid lightgrey;
+                    padding: 5px;
+                    height: 420px">
+                    <p>姓名 {{ form.similarname.data }}</p>
+                    <p>性别 {{ form.similarsex.data }}</p>
+                    <p>出生地 {{ form.similarbirthplace.data }}</p>
+                    <p>民族 {{ form.similarnation.data }}</p>
+                    <p>案发时间 {{ form.similartime.data }}</p>
+                    <p>案由 {{ form.similarexcuse.data }}</p>
+                    <p>相关法院 {{ form.similarrelativeCourt.data }}</p>
+                </div>
             </form>
         </div>
     </div>

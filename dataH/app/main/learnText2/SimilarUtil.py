@@ -78,9 +78,9 @@ def useJsonFind(targetText, pattern):
             for a in divideTextNow["姓名"]:
                 realTarText += a
                 display += a + ","
-        if arg == 'b':
-            display += "\n出生地："
-            for a in divideTextNow["出生地"]:
+        if arg == 's':
+            display += "\n性别："
+            for a in divideTextNow["性别"]:
                 display += a + ","
                 realTarText += a
         if arg == 'n':
@@ -88,13 +88,21 @@ def useJsonFind(targetText, pattern):
             for a in divideTextNow["民族"]:
                 display += a + ","
                 realTarText += a
+        if arg == 'b':
+            display += "\n出生地："
+            for a in divideTextNow["出生地"]:
+                display += a + ","
+                realTarText += a
+        if arg == 'e':
+            display += "\n案由："
+            for a in divideTextNow["案由"]:
+                display += a + ","
+                realTarText += a
         if arg == 't':
-            display += "\n案发日期："
-            guessDate = findDate(targetText)
-            for guesss in guessDate:
-                display += guesss + ","
-                realTarText += guesss
-
+            display += "\n案件日期："
+            for a in divideTextNow["案件日期"]:
+                display += a + ","
+                realTarText += a
     corpus_embeddings = embedder.encode(allDocuments)
 
     query_embedding = embedder.encode(realTarText)

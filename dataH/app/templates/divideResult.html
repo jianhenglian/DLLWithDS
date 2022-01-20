@@ -10,17 +10,23 @@
 <form method=post enctype=multipart/form-data>
       <input type=file name=file>
         <label>上传案例文件</label>
-    <br>
-    <input type=submit value=Upload>
-        <label>展示</label>
+    <p>已选择文件：{{ form.fileLabel.data }}</p>
+    <input type=submit value=上传 style="padding: 3px;background-color: #d4dbec;
+    border-radius: 10px;
+    height: 30px;
+    border: NONE;
+    width: 60px;">
 </form>
-<div class="container">
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <textarea rows="20" cols="120">
+<div style="float: left">
+    <textarea rows="48" cols="70" style="float: left
+    width: 800px;
+    padding: 5px;
+       margin-right: 10px">
         {{ form.text.data }}
     </textarea>
-</form>
 </div>
-{{ wtf.quick_form(form) }}
+<div style="float: left">
+    {{ wtf.quick_form(form) }}
+</div>
+<!--{{ wtf.quick_form(form) }}-->
 {% endblock %}

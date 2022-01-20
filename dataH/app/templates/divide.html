@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
 {% block title %}Flasky{% endblock %}
 
 {% block page_content %}
@@ -9,20 +8,23 @@
 </div>
 <form method=post enctype=multipart/form-data>
       <input type=file name=file>
-        <label>上传案例文件</label>
+    <p>已选择文件：{{ form.fileLabel.data }}</p>
+    <input type=submit value=上传 style="padding: 3px;background-color: #d4dbec;
+    border-radius: 10px;
+    height: 30px;
+    border: NONE;
+    width: 60px;">
     <br>
-    <input type=submit value=Upload>
-    <br>
-    <label>展示</label>
 </form>
-<div class="container">
+<div>
 <form method="POST">
     {{ form.hidden_tag() }}
-    {{ form.text.label }}
-    <div class='form-group'>
-    {{ form.text(cols=120,rows=20) }}
-    </div>
+    <textarea rows="20" cols="120" style="
+    width: 800px;
+    border: 5px solid lightgrey;
+    padding: 5px;">
+        {{ form.text.data }}
+    </textarea>
 </form>
 </div>
-<!--{{ wtf.quick_form(form) }}-->
 {% endblock %}

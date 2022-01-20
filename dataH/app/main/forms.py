@@ -13,17 +13,21 @@ so we can do something with these data."""
 
 class NameForm(FlaskForm):
     text = HiddenField("输些东西进来试一试")
+    fileLabel = HiddenField("文件附带的")
     nameNeed = BooleanField("姓名")
     nationNeed = BooleanField("民族")
     birthNeed = BooleanField("出生地")
     relaNeed = BooleanField("相关法院")
     timeNeed = BooleanField("案发时间")
+    sexNeed = BooleanField("性别")
+    excuseNeed = BooleanField("案由")
     submit = SubmitField('查找最相似文本')
 
 
 
 class FindSimiliarText(FlaskForm):
      text = HiddenField("")
+     fileLabel = HiddenField("文件附带的")
      textGuess = HiddenField("猜的")
      similarText = HiddenField('')
      similarname = HiddenField('名字')
@@ -38,14 +42,15 @@ class FindSimiliarText(FlaskForm):
 
 class DivideForm(FlaskForm):
     text = TextAreaField("")
+    fileLabel = HiddenField("文件附带的")
 
 
 class DivideFormResult(FlaskForm):
     text = HiddenField("")
+    fileLabel = HiddenField("文件附带的")
     name = SelectField("姓名  ")
     nameReplace = StringField("自定义姓名")
     sex = SelectField("性别  ")
-    sexReplace = StringField("自定义性别")
     nation = SelectField("民族  ")
     nationReplace = StringField("自定义民族")
     birthplace = SelectField("出生地  ")

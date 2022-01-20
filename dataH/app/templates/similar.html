@@ -9,19 +9,25 @@
 </div>
 <form method=post enctype=multipart/form-data>
       <input type=file name=file>
-        <label>上传案例文件</label>
-    <br>
-    <input type=submit value=Upload>
-        <label>展示</label>
+    <p>已选择文件：{{ form.fileLabel.data }}</p>
+        <input type=submit value=上传 style="padding: 3px;background-color: #d4dbec;
+    border-radius: 10px;
+    height: 30px;
+    border: NONE;
+    width: 60px;">
+        <br>
 </form>
-<div class="container">
+<div>
 <form method="POST">
     {{ form.hidden_tag() }}
-    <textarea rows="20" cols="120">
+    <textarea rows="20" cols="120" style="
+    width: 800px;
+    border: 5px solid lightgrey;
+    padding: 5px;">
         {{ form.text.data }}
     </textarea>
-    <p>请选择你想要寻找最相似文本的相似基准</p>
 </form>
+    <p>请选择你想要寻找最相似文本的相似基准</p>
+    {{ wtf.quick_form(form) }}-->
 </div>
-{{ wtf.quick_form(form) }}
 {% endblock %}

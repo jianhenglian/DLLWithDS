@@ -1,9 +1,8 @@
 from flask import render_template, redirect, session, url_for, flash, request, send_from_directory
 from . import main
 from .forms import NameForm, FindSimiliarText, DivideForm, DivideFormResult
-from .learnText2.SimilarUtil import findMostSimilarText, useJsonFind
-from .learnText2.Util import divideText, findDate
-from werkzeug.utils import secure_filename
+from .learnText2.SimilarUtil import useJsonFind
+from .learnText2.Util import divideText
 import os
 import json
 
@@ -13,13 +12,21 @@ DOWNLOAD_FOLDER = 'D:\\self_learning\\flask\\dataH\\app\\main\\learnText2\\jsonF
 nameNum = 1
 
 
-# @csrf.exempt
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/', methods=['GET'])
 def index():
+    return render_template('main.html')
+
+
+
+@main.route('/similar', methods=['GET', 'POST'])
+def similar():
     newForm = FindSimiliarText()
     form = NameForm()
+    if form.text.data is None:
+        form.text.data = ""
     if form.validate_on_submit():
             newForm.text.data = form.text.data
+            newForm.fileLabel.data = form.fileLabel.data
             pattern = ""
             if form.birthNeed.data:
                 pattern+="b"
@@ -31,6 +38,10 @@ def index():
                 pattern+="r"
             if form.timeNeed.data:
                 pattern+="t"
+            if form.sexNeed.data:
+                pattern+="s"
+            if  form.excuseNeed.data:
+                pattern+="e"
             findResult = useJsonFind(form.text.data, pattern)
             newForm.similarText.data = findResult["文本"]
             docujson = findResult["json"]
@@ -57,7 +68,9 @@ def index():
         if file and allowed_file(file.filename):
             filename = file.filename
             text = readAFile(os.path.join(UPLOAD_FOLDER, filename))
+            form=NameForm()
             form.text.data = text
+            form.fileLabel.data = filename
             return render_template('similar.html', form=form)
     return render_template('similar.html', form=form)
 
@@ -66,6 +79,8 @@ def index():
 def divide():
     form = DivideForm()
     newForm = DivideFormResult()
+    if form.text.data is None:
+        form.text.data = ""
     if form.validate_on_submit():
         result = {}
         if newForm.nameReplace.data != "":
@@ -76,10 +91,8 @@ def divide():
             result["民族"] = newForm.nationReplace.data
         else:
             result["民族"] = newForm.nation.data
-        if newForm.sexReplace.data != "":
-            result["性别"] = newForm.sexReplace.data
-        else:
-            result["性别"] = newForm.sex.data
+
+        result["性别"] = newForm.sex.data
         if newForm.birthplaceReplace.data != "":
             result["出生地"] = newForm.birthplaceReplace.data
         else:
@@ -113,10 +126,10 @@ def divide():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            # filename = secure_filename(file.filename)
             filename = file.filename
             text = readAFile(os.path.join(UPLOAD_FOLDER, filename))
             form = DivideFormResult()
+            form.fileLabel.data = filename
             divideResult = divideText(text)
             form.sex.choices = divideResult['性别']
             form.relativeCourt.choices = divideResult["相关法院"]
@@ -130,9 +143,9 @@ def divide():
     return render_template('divide.html', form=form)
 
 
-@main.route('/divideResult', methods=['GET', 'POST'])
-def storeFile(form):
-    return render_template('divideResult.html', form=form)
+# @main.route('/divideResult', methods=['GET', 'POST'])
+# def storeFile(form):
+#     return render_template('divideResult.html', form=form)
 
 
 @main.route('/uploads/<name>')

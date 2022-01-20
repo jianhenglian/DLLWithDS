@@ -25,7 +25,6 @@ def create_app():
     app.add_url_rule(
         "/uploads/<name>", endpoint="download_file", build_only=True
     )
-    # app.add_url_rule("/divideResult")
     app.register_blueprint(main_blueprint)
 
     return app
